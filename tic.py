@@ -1,4 +1,5 @@
 """Tic Tac Toe"""
+import sys
 
 x, o, blank = 'x', 'o', ' '
 
@@ -22,9 +23,21 @@ def print_board(board):
 
 def player_input(char, board):
     """Takes position input from player"""
-    pos = int(input(f'{char}>'))
-
-    board[pos-1] = char
+    while True:
+        try:
+            pos = int(input(f'{char}>'))
+            if board[pos-1] != blank:
+                print('choose an empty cell')
+                continue
+            board[pos-1] = char
+            break
+        except IndexError:
+            print('choose a value between 1 and 9')
+            break
+        except ValueError:
+            print('try again')
+        except KeyboardInterrupt:
+            sys.exit()
 
 
 def check_win(char, board):
@@ -84,7 +97,10 @@ def turn(player, board):
 def main():
     """Runs TicTacToe"""
     while True:
-        input_string = input("Choose Player 1 symbol ('X' or 'O'): ")
+        try:
+            input_string = input("Choose Player 1 symbol ('X' or 'O'): ")
+        except KeyboardInterrupt:
+            sys.exit()
         if not input_string:
             continue
 
