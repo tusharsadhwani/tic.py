@@ -11,6 +11,10 @@ BOARD = '''
 '''
 
 
+class GameOver(Exception):
+    """Raised when the game ends"""
+
+
 def print_board(board):
     """Prints the board to stdout"""
     print(BOARD.format(*board))
@@ -69,14 +73,12 @@ def turn(player, board):
     if check_win(player, board):
         print(f'Player {player} won!')
         print_board(board)
-        return True
+        raise GameOver
 
     if check_tie(board):
         print_board(board)
         print('It\'s a tie!')
-        return True
-
-    return False
+        raise GameOver
 
 
 def main():
@@ -97,12 +99,14 @@ def main():
 
         print('Try again')
 
-    game_over = False
     board = [blank] * 9
 
-    while not game_over:
-        game_over = turn(player_1, board)
-        game_over = turn(player_2, board)
+    while True:
+        try:
+            turn(player_1, board)
+            turn(player_2, board)
+        except GameOver:
+            break
 
 
 if __name__ == '__main__':
