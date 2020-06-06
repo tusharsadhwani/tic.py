@@ -43,7 +43,7 @@ def check_win(char, board):
     )
     diags = (
         (2, 4, 6),
-        (0, 5, 8),
+        (0, 4, 8),
     )
 
     edges = (
@@ -71,8 +71,8 @@ def turn(player, board):
     player_input(player, board)
 
     if check_win(player, board):
-        print(f'Player {player} won!')
         print_board(board)
+        print(f'Player {player} won!')
         raise GameOver
 
     if check_tie(board):
