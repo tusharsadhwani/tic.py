@@ -1,9 +1,9 @@
 """Tic Tac Toe"""
 import sys
 
-x, o, blank = 'x', 'o', ' '
+X, O, BLANK = 'x', 'o', ' '
 
-BOARD = '''
+BOARD_STR = '''
  {} | {} | {} 
 -----------
  {} | {} | {} 
@@ -16,34 +16,108 @@ class GameOver(Exception):
     """Raised when the game ends"""
 
 
-def print_board(board):
-    """Prints the board to stdout"""
-    print(BOARD.format(*board))
+def main():
+    """Runs Tic Tac Toe"""
+    print_instructions()
 
+    player_1, player_2 = choose_players()
 
-def player_input(char, board):
-    """Takes position input from player"""
+    board = [BLANK] * 9
+
     while True:
         try:
-            pos = int(input(f'{char}>'))
-            if board[pos-1] != blank:
-                print('choose an empty cell')
-                continue
-            board[pos-1] = char
+            play_turn(player_1, board)
+            play_turn(player_2, board)
+        except GameOver:
             break
-        except IndexError:
-            print('choose a value between 1 and 9')
-            break
-        except ValueError:
-            print('try again')
+
+
+def print_instructions():
+    """Print instructions on game start"""
+    print(
+        'Welcome to Tic Tac Toe.\n'
+        'Board positions are as follows:'
+    )
+    print_board_positions()
+
+
+def print_board_positions():
+    """Prints the board positions"""
+    positions = range(1, 9+1)
+    print(BOARD_STR.format(*positions))
+
+
+def choose_players():
+    """Chooses the symbols for each player"""
+    while True:
+        try:
+            input_string = input("Choose Player 1 symbol ('x' or 'o'): ")
         except KeyboardInterrupt:
             sys.exit()
+
+        player_1 = input_string.lower()
+
+        if player_1 == X:
+            player_2 = O
+            return player_1, player_2
+
+        if player_1 == O:
+            player_2 = X
+            return player_1, player_2
+
+        print('Try again.')
+
+
+def play_turn(player, board):
+    """Plays one turn of the game, and throws on game over"""
+    print_board(board)
+
+    player_input(player, board)
+
+    if check_win(player, board):
+        print_board(board)
+        print(f'Player {player} won!')
+        raise GameOver
+
+    if check_tie(board):
+        print_board(board)
+        print('It\'s a tie!')
+        raise GameOver
+
+
+def print_board(board):
+    """Prints the board"""
+    print(BOARD_STR.format(*board))
+
+
+def player_input(player_char, board):
+    """Takes a position input from the player"""
+    while True:
+        try:
+            position_input = input(f'{player_char}> ')
+        except KeyboardInterrupt:
+            sys.exit()
+
+        if not position_input.isdigit():
+            print('Try again.')
+            continue
+
+        position = int(position_input) - 1
+
+        if position < 0 or position >= len(board):
+            print(f'Choose a value between 1 and {len(board)}.')
+            continue
+
+        if board[position] != BLANK:
+            print('Choose an empty cell.')
+            continue
+
+        board[position] = player_char
+        break
 
 
 def check_win(char, board):
     """Checks if a player has won the game"""
-    win = False
-
     rows = (
         (0, 1, 2),
         (3, 4, 5),
@@ -59,70 +133,18 @@ def check_win(char, board):
         (0, 4, 8),
     )
 
-    edges = (
-        *rows,
-        *cols,
-        *diags
-    )
+    edges = (*rows, *cols, *diags)
 
     for edge in edges:
-        if all([(board[i] == char) for i in edge]):
-            win = True
-            break
+        if all(board[i] == char for i in edge):
+            return True
 
-    return win
+    return False
 
 
 def check_tie(board):
     """Checks if the game was a tie"""
-    return all([char != blank for char in board])
-
-
-def turn(player, board):
-    """Plays one turn of the game, and returns if the game has ended or not"""
-    print_board(board)
-    player_input(player, board)
-
-    if check_win(player, board):
-        print_board(board)
-        print(f'Player {player} won!')
-        raise GameOver
-
-    if check_tie(board):
-        print_board(board)
-        print('It\'s a tie!')
-        raise GameOver
-
-
-def main():
-    """Runs TicTacToe"""
-    while True:
-        try:
-            input_string = input("Choose Player 1 symbol ('X' or 'O'): ")
-        except KeyboardInterrupt:
-            sys.exit()
-        if not input_string:
-            continue
-
-        player_1 = input_string.strip()[0].lower()
-        if player_1 == x:
-            player_2 = o
-            break
-
-        if player_1 == o:
-            player_2 = x
-            break
-
-        print('Try again')
-
-    board = [blank] * 9
-
-    while True:
-        try:
-            turn(player_1, board)
-            turn(player_2, board)
-        except GameOver:
-            break
+    return all(char != BLANK for char in board)
 
 
 if __name__ == '__main__':
