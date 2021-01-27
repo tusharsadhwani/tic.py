@@ -1,2 +1,3 @@
 # tic.py
-TicTacToe written in Python
+
+TicTacToe written in 100 lines of Python.
