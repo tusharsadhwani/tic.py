@@ -55,15 +55,13 @@ def choose_players():
         except KeyboardInterrupt:
             sys.exit()
 
-        player_1 = input_string.lower()
+        input_string = input_string.lower()
 
-        if player_1 == X:
-            player_2 = O
-            return player_1, player_2
+        if input_string == X:
+            return X, O
 
-        if player_1 == O:
-            player_2 = X
-            return player_1, player_2
+        if input_string == O:
+            return O, X
 
         print('Try again.')
 
