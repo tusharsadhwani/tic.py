@@ -1,3 +1,3 @@
 # tic.py
 
-TicTacToe written in 100 lines of Python.
+Tic Tac Toe written in ~100 lines of idiomatic Python.
