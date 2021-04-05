@@ -136,7 +136,7 @@ def check_win(char: BoardChar, board: list[str]) -> bool:
     edges = (*rows, *cols, *diags)
 
     for edge in edges:
-        if all(board[i] == char for i in edge):
+        if all(board[index] == char for index in edge):
             return True
 
     return False
